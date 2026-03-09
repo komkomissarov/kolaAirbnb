@@ -25,4 +25,4 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 INSERT INTO users (name, email, password, role) VALUES 
-('Admin', 'admin@luxrent.ru', 'admin123', 'admin');
+('Admin', 'admin@luxrent.ru', '$2y$12$6YLOPVOv6f.avha8RhyG.uSf940ddTyGOvYoQEQR5k95ebN.jsOIS', 'admin');

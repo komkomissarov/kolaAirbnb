@@ -459,6 +459,24 @@
         </div>
     </main>
 
+    <!-- Booking Modal -->
+    <div id="bookingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
+        <div style="background:white; padding:2rem; border-radius:10px; width:100%; max-width:400px; position:relative;">
+            <span style="position:absolute; top:15px; right:20px; font-size:1.5rem; cursor:pointer;" onclick="closeBookingForm()">&times;</span>
+            <h3 style="margin-bottom:1.5rem; color:var(--primary);">Оставить заявку</h3>
+            <div class="form-group" style="margin-bottom:1rem;">
+                <label style="display:block; margin-bottom:0.5rem; color:var(--dark);">Имя</label>
+                <input type="text" id="bookingName" style="width:100%; padding:0.8rem; border:1px solid #ddd; border-radius:5px;" required>
+            </div>
+            <div class="form-group" style="margin-bottom:1.5rem;">
+                <label style="display:block; margin-bottom:0.5rem; color:var(--dark);">Телефон</label>
+                <input type="text" id="bookingPhone" style="width:100%; padding:0.8rem; border:1px solid #ddd; border-radius:5px;" required>
+            </div>
+            <input type="hidden" id="bookingPropertyId">
+            <button class="search-btn" style="width:100%; border-radius:5px; padding:1rem;" onclick="submitBooking()">Отправить заявку</button>
+        </div>
+    </div>
+
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -509,109 +527,27 @@
     </footer>
 
     <script>
-        // База данных недвижимости
-        const properties = [
-            {
-                id: 1,
-                title: 'Апартаменты в центре Москвы',
-                location: 'Москва, Пресненская наб.',
-                city: 'Москва',
-                type: 'Апартаменты',
-                rooms: '3',
-                image: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-                price: 85000,
-                features: { beds: 3, baths: 2, area: 120 }
-            },
-            {
-                id: 2,
-                title: 'Лофт в Санкт-Петербурге',
-                location: 'Санкт-Петербург, В.О., 7-я линия',
-                city: 'Санкт-Петербург',
-                type: 'Лофт',
-                rooms: '2',
-                image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-                price: 65000,
-                features: { beds: 2, baths: 1, area: 90 }
-            },
-            {
-                id: 3,
-                title: 'Загородный дом в Подмосковье',
-                location: 'Московская обл., Барвиха',
-                city: 'Москва',
-                type: 'Дом',
-                rooms: '4+',
-                image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-                price: 150000,
-                features: { beds: 4, baths: 3, area: 220 }
-            },
-            {
-                id: 4,
-                title: 'Пентхаус в Екатеринбурге',
-                location: 'Екатеринбург, ул. Малышева',
-                city: 'Екатеринбург',
-                type: 'Пентхаус',
-                rooms: '3',
-                image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-                price: 120000,
-                features: { beds: 3, baths: 2, area: 150 }
-            },
-            {
-                id: 5,
-                title: 'Квартира в Казани',
-                location: 'Казань, район Кремля',
-                city: 'Казань',
-                type: 'Квартира',
-                rooms: '1',
-                image: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-                price: 35000,
-                features: { beds: 1, baths: 1, area: 45 }
-            },
-            {
-                id: 6,
-                title: 'Апартаменты в Сочи с видом на море',
-                location: 'Сочи, Адлерский район',
-                city: 'Сочи',
-                type: 'Апартаменты',
-                rooms: '2',
-                image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-                price: 55000,
-                features: { beds: 2, baths: 1, area: 75 }
-            },
-            {
-                id: 7,
-                title: 'Квартира на Невском проспекте',
-                location: 'Санкт-Петербург, Невский пр.',
-                city: 'Санкт-Петербург',
-                type: 'Квартира',
-                rooms: '2',
-                image: 'https://images.unsplash.com/photo-1554995207-c18c203602cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-                price: 70000,
-                features: { beds: 2, baths: 1, area: 65 }
-            },
-            {
-                id: 8,
-                title: 'Элитный особняк в Барвихе',
-                location: 'Московская обл., Барвиха',
-                city: 'Москва',
-                type: 'Дом',
-                rooms: '4+',
-                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-                price: 280000,
-                features: { beds: 5, baths: 4, area: 350 }
-            }
-        ];
-
         const propertyList = document.getElementById('propertyList');
         const noResults = document.getElementById('noResults');
         const citySelect = document.getElementById('city');
-        const typeSelect = document.getElementById('type');
-        const roomsSelect = document.getElementById('rooms');
         const applyBtn = document.getElementById('applyFilter');
+
+        async function fetchProperties() {
+            const city = citySelect.value;
+            try {
+                const response = await fetch(`backend/api/properties.php?city=${city}`);
+                const data = await response.json();
+                renderProperties(data);
+            } catch (e) {
+                console.error("Ошибка загрузки данных", e);
+                propertyList.innerHTML = '<p style="text-align:center;width:100%;">Ошибка загрузки данных.</p>';
+            }
+        }
 
         function renderProperties(filteredProps) {
             propertyList.innerHTML = '';
 
-            if (filteredProps.length === 0) {
+            if (!filteredProps || filteredProps.length === 0) {
                 noResults.style.display = 'block';
                 return;
             }
@@ -619,69 +555,76 @@
             noResults.style.display = 'none';
 
             filteredProps.forEach(p => {
-
                 const card = document.createElement('div');
                 card.className = 'property-card';
+                
+                let imageUrl = p.image ? `backend/assets/images/${p.image}` : 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80';
 
                 card.innerHTML = `
-                    <div class="property-image" style="background-image: url('${p.image}')"></div>
-
+                    <div class="property-image" style="background-image: url('${imageUrl}')"></div>
                     <div class="property-info">
                         <h3 class="property-title">${p.title}</h3>
-
                         <div class="property-location">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>${p.location}</span>
+                            <span>${p.city}</span>
                         </div>
-
-                        <div class="property-features">
-                            <span><i class="fas fa-bed"></i> ${p.features.beds} спальни</span>
-                            <span><i class="fas fa-bath"></i> ${p.features.baths} ванные</span>
-                            <span><i class="fas fa-ruler-combined"></i> ${p.features.area} м²</span>
+                        <p style="font-size: 0.9rem; color: var(--gray); margin-bottom: 1rem;">
+                            ${p.description ? p.description.substring(0, 100) + '...' : ''}
+                        </p>
+                        <div class="property-price" style="margin-bottom: 1rem;">
+                            ${Number(p.price).toLocaleString()} ₽ <small>/мес</small>
                         </div>
-
-                        <div class="property-price">
-                            ${p.price.toLocaleString()} ₽ <small>/мес</small>
-                        </div>
+                        <button class="search-btn" style="width:100%; border-radius:10px; padding:0.8rem;" onclick="openBookingForm(${p.id})">Оставить заявку</button>
                     </div>
                 `;
-
                 propertyList.appendChild(card);
             });
         }
 
-        function filterProperties() {
-
-            const city = citySelect.value;
-            const type = typeSelect.value;
-            const rooms = roomsSelect.value;
-
-            const filtered = properties.filter(p => {
-
-                if (city !== 'all' && p.city !== city) return false;
-                if (type !== 'all' && p.type !== type) return false;
-
-                if (rooms !== 'all') {
-
-                    if (rooms === '4+' && !['4+', '5', '6'].includes(p.rooms))
-                        return false;
-
-                    if (rooms !== '4+' && p.rooms !== rooms)
-                        return false;
-                }
-
-                return true;
-            });
-
-            renderProperties(filtered);
+        applyBtn.addEventListener('click', fetchProperties);
+        fetchProperties();
+        
+        function openBookingForm(propertyId) {
+            document.getElementById('bookingPropertyId').value = propertyId;
+            document.getElementById('bookingModal').style.display = 'flex';
         }
 
-        // показать все объекты при загрузке
-        renderProperties(properties);
+        function closeBookingForm() {
+            document.getElementById('bookingModal').style.display = 'none';
+        }
 
-        // кнопка фильтра
-        applyBtn.addEventListener('click', filterProperties);
+        async function submitBooking() {
+            const name = document.getElementById('bookingName').value;
+            const phone = document.getElementById('bookingPhone').value;
+            const propertyId = document.getElementById('bookingPropertyId').value;
 
-</script>
+            if (!name || !phone) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+
+            try {
+                const response = await fetch('backend/api/booking.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone, property_id: propertyId })
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    alert(data.message || 'Заявка отправлена');
+                    closeBookingForm();
+                    document.getElementById('bookingName').value = '';
+                    document.getElementById('bookingPhone').value = '';
+                } else {
+                    alert(data.message || 'Ошибка отправки');
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Ошибка отправки заявки');
+            }
+        }
+    </script>
+<script src="auth-header.js"></script>
 </body>
 </html>

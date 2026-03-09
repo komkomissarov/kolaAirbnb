@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-require_once __DIR__ . '../../../db.php';
+require_once __DIR__ . '/../../db.php';
 
 // Получаем все объекты недвижимости
 $properties = $pdo->query("SELECT * FROM properties ORDER BY created_at DESC")->fetchAll();
@@ -34,7 +34,11 @@ header a { color: white; background: #c00; padding: 0.5rem 1rem; text-decoration
 
 <header>
     <h1>Админ панель LuxRent</h1>
-    <a href="logout.php">Выйти</a>
+    <div>
+        <a href="dashboard.php" style="background: #004080; margin-right: 10px;">Недвижимость</a>
+        <a href="users.php" style="background: #004080; margin-right: 10px;">Пользователи</a>
+        <a href="logout.php">Выйти</a>
+    </div>
 </header>
 
 <div class="container">
