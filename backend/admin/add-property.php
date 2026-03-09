@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../index.html');
+    header('Location: ../../index.html');
     exit;
 }
 
@@ -15,8 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $image = '';
 
     if (!empty($_FILES['image']['name'])) {
+        $imageDir = __DIR__ . '/../assets/images/';
+        if (!is_dir($imageDir)) {
+            mkdir($imageDir, 0777, true);
+        }
         $image = time() . '_' . basename($_FILES['image']['name']);
-        move_uploaded_file($_FILES['image']['tmp_name'], __DIR__ . '/../assets/images/' . $image);
+        move_uploaded_file($_FILES['image']['tmp_name'], $imageDir . $image);
     }
 
     $stmt = $pdo->prepare("INSERT INTO properties (title, city, price, description, image) VALUES (?, ?, ?, ?, ?)");
