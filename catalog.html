@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxRent — Каталог недвижимости</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--secondary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--secondary);
+        }
+
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+
+        .auth-buttons button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .auth-buttons button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+
+        /* Фильтры поиска */
+        .search-filters {
+            background-color: white;
+            border-radius: 50px;
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 180px;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 0.7rem 1rem;
+            border: 1px solid #dee7ed;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            background-color: #fbfcfd;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        }
+
+        .search-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.7rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px -5px var(--secondary);
+            align-self: center;
+            height: fit-content;
+        }
+
+        .search-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Каталог карточек */
+        .property-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .property-card {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            background-color: white;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .property-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .property-image {
+            height: 220px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s ease;
+        }
+
+        .property-card:hover .property-image {
+            transform: scale(1.03);
+        }
+
+        .property-info {
+            padding: 1.5rem;
+        }
+
+        .property-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .property-location {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .property-features {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+            color: #5d6d7e;
+            background: #f8fafc;
+            padding: 0.8rem;
+            border-radius: 15px;
+        }
+
+        .property-price {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .property-price small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--gray);
+        }
+
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.7rem;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.7rem;
+        }
+
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.3rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 992px) {
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .search-filters {
+                border-radius: 30px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-group {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            nav ul {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-home"></i>
+                <span>LuxRent</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="catalog.html" class="active">Каталог</a></li>
+                    <li><a href="catalog.html">По городам</a></li>
+                    <li><a href="#">О нас</a></li>
+                    <li><a href="#">Контакты</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button onclick="window.location.href='reg.html'">Войти</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="page-title">Каталог элитной недвижимости</h1>
+            
+            <!-- Блок поиска / фильтрации -->
+            <div class="search-filters">
+                <div class="filter-group">
+                    <label for="city"><i class="fas fa-city" style="margin-right: 5px; color: var(--secondary);"></i> Город</label>
+                    <select id="city">
+                        <option value="all">Все города</option>
+                        <option value="Москва">Москва</option>
+                        <option value="Санкт-Петербург">Санкт-Петербург</option>
+                        <option value="Сочи">Сочи</option>
+                        <option value="Казань">Казань</option>
+                        <option value="Екатеринбург">Екатеринбург</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="type"><i class="fas fa-door-open" style="margin-right: 5px; color: var(--secondary);"></i> Тип жилья</label>
+                    <select id="type">
+                        <option value="all">Все типы</option>
+                        <option value="Квартира">Квартира</option>
+                        <option value="Апартаменты">Апартаменты</option>
+                        <option value="Пентхаус">Пентхаус</option>
+                        <option value="Лофт">Лофт</option>
+                        <option value="Дом">Дом / Коттедж</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="rooms"><i class="fas fa-bed" style="margin-right: 5px; color: var(--secondary);"></i> Комнат</label>
+                    <select id="rooms">
+                        <option value="all">Любое</option>
+                        <option value="1">1 комната</option>
+                        <option value="2">2 комнаты</option>
+                        <option value="3">3 комнаты</option>
+                        <option value="4+">4+ комнаты</option>
+                    </select>
+                </div>
+                <button class="search-btn" id="applyFilter"><i class="fas fa-search" style="margin-right: 8px;"></i>Найти</button>
+            </div>
+
+            <!-- Список карточек недвижимости -->
+            <div class="property-list" id="propertyList">
+                <!-- Карточки будут отфильтрованы через js -->
+            </div>
+            <div id="noResults" style="text-align: center; padding: 3rem; color: var(--gray); display: none;">
+                <i class="fas fa-home" style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem;"></i>
+                <h3>По вашему запросу ничего не найдено</h3>
+                <p>Попробуйте изменить параметры поиска</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>LuxRent</h3>
+                    <p>Платформа для аренды элитного жилья. Мы соединяем владельцев премиальной недвижимости с клиентами, ценящими комфорт и качество.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Навигация</h3>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="catalog.html">По городам</a></li>
+                        <li><a href="#">О нас</a></li>
+                        <li><a href="#">Контакты</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Помощь</h3>
+                    <ul>
+                        <li><a href="#">Частые вопросы</a></li>
+                        <li><a href="#">Как арендовать</a></li>
+                        <li><a href="#">Как сдать жилье</a></li>
+                        <li><a href="#">Безопасность</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +7 (495) 123-45-67</li>
+                        <li><i class="fas fa-envelope"></i> info@luxrent.ru</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Москва, ул. Тверская, 12</li>
+                        <li><i class="fas fa-clock"></i> Пн-Пт: 9:00-21:00</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 LuxRent. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // База данных недвижимости
+        const properties = [
+            {
+                id: 1,
+                title: 'Апартаменты в центре Москвы',
+                location: 'Москва, Пресненская наб.',
+                city: 'Москва',
+                type: 'Апартаменты',
+                rooms: '3',
+                image: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                price: 85000,
+                features: { beds: 3, baths: 2, area: 120 }
+            },
+            {
+                id: 2,
+                title: 'Лофт в Санкт-Петербурге',
+                location: 'Санкт-Петербург, В.О., 7-я линия',
+                city: 'Санкт-Петербург',
+                type: 'Лофт',
+                rooms: '2',
+                image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                price: 65000,
+                features: { beds: 2, baths: 1, area: 90 }
+            },
+            {
+                id: 3,
+                title: 'Загородный дом в Подмосковье',
+                location: 'Московская обл., Барвиха',
+                city: 'Москва',
+                type: 'Дом',
+                rooms: '4+',
+                image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                price: 150000,
+                features: { beds: 4, baths: 3, area: 220 }
+            },
+            {
+                id: 4,
+                title: 'Пентхаус в Екатеринбурге',
+                location: 'Екатеринбург, ул. Малышева',
+                city: 'Екатеринбург',
+                type: 'Пентхаус',
+                rooms: '3',
+                image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                price: 120000,
+                features: { beds: 3, baths: 2, area: 150 }
+            },
+            {
+                id: 5,
+                title: 'Квартира в Казани',
+                location: 'Казань, район Кремля',
+                city: 'Казань',
+                type: 'Квартира',
+                rooms: '1',
+                image: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                price: 35000,
+                features: { beds: 1, baths: 1, area: 45 }
+            },
+            {
+                id: 6,
+                title: 'Апартаменты в Сочи с видом на море',
+                location: 'Сочи, Адлерский район',
+                city: 'Сочи',
+                type: 'Апартаменты',
+                rooms: '2',
+                image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                price: 55000,
+                features: { beds: 2, baths: 1, area: 75 }
+            },
+            {
+                id: 7,
+                title: 'Квартира на Невском проспекте',
+                location: 'Санкт-Петербург, Невский пр.',
+                city: 'Санкт-Петербург',
+                type: 'Квартира',
+                rooms: '2',
+                image: 'https://images.unsplash.com/photo-1554995207-c18c203602cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                price: 70000,
+                features: { beds: 2, baths: 1, area: 65 }
+            },
+            {
+                id: 8,
+                title: 'Элитный особняк в Барвихе',
+                location: 'Московская обл., Барвиха',
+                city: 'Москва',
+                type: 'Дом',
+                rooms: '4+',
+                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                price: 280000,
+                features: { beds: 5, baths: 4, area: 350 }
+            }
+        ];
+
+        const propertyList = document.getElementById('propertyList');
+        const noResults = document.getElementById('noResults');
+        const citySelect = document.getElementById('city');
+        const typeSelect = document.getElementById('type');
+        const roomsSelect = document.getElementById('rooms');
+        const applyBtn = document.getElementById('applyFilter');
+
+        function renderProperties(filteredProps) {
+            propertyList.innerHTML = '';
+
+            if (filteredProps.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+
+            filteredProps.forEach(p => {
+
+                const card = document.createElement('div');
+                card.className = 'property-card';
+
+                card.innerHTML = `
+                    <div class="property-image" style="background-image: url('${p.image}')"></div>
+
+                    <div class="property-info">
+                        <h3 class="property-title">${p.title}</h3>
+
+                        <div class="property-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${p.location}</span>
+                        </div>
+
+                        <div class="property-features">
+                            <span><i class="fas fa-bed"></i> ${p.features.beds} спальни</span>
+                            <span><i class="fas fa-bath"></i> ${p.features.baths} ванные</span>
+                            <span><i class="fas fa-ruler-combined"></i> ${p.features.area} м²</span>
+                        </div>
+
+                        <div class="property-price">
+                            ${p.price.toLocaleString()} ₽ <small>/мес</small>
+                        </div>
+                    </div>
+                `;
+
+                propertyList.appendChild(card);
+            });
+        }
+
+        function filterProperties() {
+
+            const city = citySelect.value;
+            const type = typeSelect.value;
+            const rooms = roomsSelect.value;
+
+            const filtered = properties.filter(p => {
+
+                if (city !== 'all' && p.city !== city) return false;
+                if (type !== 'all' && p.type !== type) return false;
+
+                if (rooms !== 'all') {
+
+                    if (rooms === '4+' && !['4+', '5', '6'].includes(p.rooms))
+                        return false;
+
+                    if (rooms !== '4+' && p.rooms !== rooms)
+                        return false;
+                }
+
+                return true;
+            });
+
+            renderProperties(filtered);
+        }
+
+        // показать все объекты при загрузке
+        renderProperties(properties);
+
+        // кнопка фильтра
+        applyBtn.addEventListener('click', filterProperties);
+
+</script>
+</body>
+</html>

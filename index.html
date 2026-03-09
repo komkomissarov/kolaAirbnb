@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxRent - Аренда жилья премиум-класса</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--secondary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: var(--secondary);
+        }
+
+        nav a.active {
+            color: var(--secondary);
+        }
+
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+
+        .auth-buttons button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .auth-buttons button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Main content */
+        main {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        .main-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* Property listings */
+        .property-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .property-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            background-color: white;
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .property-image {
+            height: 200px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .property-info {
+            padding: 1.5rem;
+        }
+
+        .property-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .property-location {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .property-features {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .property-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Sidebar with ads */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .advertisement {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-top: 5px solid var(--secondary);
+        }
+
+        .ad-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .ad-content {
+            margin-bottom: 1.5rem;
+            color: var(--gray);
+        }
+
+        .ad-button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .ad-button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.7rem;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.7rem;
+        }
+
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.3rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Modal registration */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal {
+            background-color: white;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: modalAppear 0.4s ease;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--secondary);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .submit-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--gray);
+        }
+
+        .form-footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .property-list {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-home"></i>
+                <span>LuxRent</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="home">Главная</a></li>
+                    <li><a href="catalog.html" class="nav-link" data-page="catalog">Каталог</a></li>
+                    <li><a href="catalog.html" class="nav-link" data-page="cities">По городам</a></li>
+                    <li><a href="#" class="nav-link" data-page="about">О нас</a></li>
+                    <li><a href="#" class="nav-link" data-page="contacts">Контакты</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button id="openRegisterModal"><a href="reg.html">Регистрация</a></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <h1 class="page-title" id="page-title">Аренда жилья премиум-класса</h1>
+            
+            <div class="content-grid">
+                <!-- Main content area -->
+                <div class="main-content" id="main-content">
+                    <!-- Content will be loaded dynamically via JS -->
+                    <div id="home-content">
+                        <h2>Добро пожаловать в LuxRent</h2>
+                        <p>Мы предлагаем лучшие варианты аренды жилья в самых престижных районах. Наша платформа объединяет владельцев элитной недвижимости и клиентов, ищущих комфорт и роскошь.</p>
+                        
+                        <div class="property-list">
+                            <div class="property-card">
+                                <div class="property-image" style="background-image: url('https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80')"></div>
+                                <div class="property-info">
+                                    <h3 class="property-title">Апартаменты в центре Москвы</h3>
+                                    <div class="property-location">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Москва, Пресненская набережная</span>
+                                    </div>
+                                    <div class="property-features">
+                                        <span><i class="fas fa-bed"></i> 3 спальни</span>
+                                        <span><i class="fas fa-bath"></i> 2 ванные</span>
+                                        <span><i class="fas fa-ruler-combined"></i> 120 м²</span>
+                                    </div>
+                                    <div class="property-price">85 000 ₽/мес</div>
+                                </div>
+                            </div>
+                            
+                            <div class="property-card">
+                                <div class="property-image" style="background-image: url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80')"></div>
+                                <div class="property-info">
+                                    <h3 class="property-title">Лофт в Санкт-Петербурге</h3>
+                                    <div class="property-location">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Санкт-Петербург, Васильевский остров</span>
+                                    </div>
+                                    <div class="property-features">
+                                        <span><i class="fas fa-bed"></i> 2 спальни</span>
+                                        <span><i class="fas fa-bath"></i> 1 ванная</span>
+                                        <span><i class="fas fa-ruler-combined"></i> 90 м²</span>
+                                    </div>
+                                    <div class="property-price">65 000 ₽/мес</div>
+                                </div>
+                            </div>
+                            
+                            <div class="property-card">
+                                <div class="property-image" style="background-image: url('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80')"></div>
+                                <div class="property-info">
+                                    <h3 class="property-title">Загородный дом в Подмосковье</h3>
+                                    <div class="property-location">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>Московская область, Барвиха</span>
+                                    </div>
+                                    <div class="property-features">
+                                        <span><i class="fas fa-bed"></i> 4 спальни</span>
+                                        <span><i class="fas fa-bath"></i> 3 ванные</span>
+                                        <span><i class="fas fa-ruler-combined"></i> 220 м²</span>
+                                    </div>
+                                    <div class="property-price">150 000 ₽/мес</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar with ads -->
+                <div class="sidebar">
+                    <div class="advertisement">
+                        <h3 class="ad-title">Специальное предложение!</h3>
+                        <p class="ad-content">Забронируйте аренду на 3 месяца и получите скидку 15% на первый месяц!</p>
+                        <a href="#" class="ad-button">Узнать подробности</a>
+                    </div>
+                    
+                    <div class="advertisement">
+                        <h3 class="ad-title">Страхование жилья</h3>
+                        <p class="ad-content">Защитите своё имущество с лучшими страховыми компаниями. Специальные условия для наших клиентов.</p>
+                        <a href="#" class="ad-button">Оформить страховку</a>
+                    </div>
+                    
+                    <div class="advertisement">
+                        <h3 class="ad-title">Партнёрская программа</h3>
+                        <p class="ad-content">Станьте партнером LuxRent и получайте до 10% с каждой успешной сделки.</p>
+                        <a href="#" class="ad-button">Присоединиться</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>LuxRent</h3>
+                    <p>Платформа для аренды элитного жилья. Мы соединяем владельцев премиальной недвижимости с клиентами, ценящими комфорт и качество.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Навигация</h3>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-page="home">Главная</a></li>
+                        <li><a href="#" class="nav-link" data-page="catalog">Каталог</a></li>
+                        <li><a href="#" class="nav-link" data-page="cities">По городам</a></li>
+                        <li><a href="#" class="nav-link" data-page="about">О нас</a></li>
+                        <li><a href="#" class="nav-link" data-page="contacts">Контакты</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Помощь</h3>
+                    <ul>
+                        <li><a href="#">Частые вопросы</a></li>
+                        <li><a href="#">Как арендовать</a></li>
+                        <li><a href="#">Как сдать жилье</a></li>
+                        <li><a href="#">Безопасность</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +7 (495) 123-45-67</li>
+                        <li><i class="fas fa-envelope"></i> info@luxrent.ru</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Москва, ул. Тверская, 12</li>
+                        <li><i class="fas fa-clock"></i> Пн-Пт: 9:00-21:00</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 LuxRent. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Registration Modal -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Регистрация</h3>
+                <button class="close-modal" id="closeRegisterModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label for="name">Имя</label>
+                        <input type="text" id="name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Электронная почта</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Телефон</label>
+                        <input type="tel" id="phone" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" id="password" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm-password">Подтвердите пароль</label>
+                        <input type="password" id="confirm-password" class="form-control" required>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Зарегистрироваться</button>
+                    
+                    <div class="form-footer">
+                        <p>Уже есть аккаунт? <a href="#" id="openLoginModal">Войти</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+(function() {
+    const tabRegister = document.getElementById('tabRegisterBtn');
+    const tabLogin = document.getElementById('tabLoginBtn');
+    const registerDiv = document.getElementById('registerForm');
+    const loginDiv = document.getElementById('loginForm');
+    const switchToLogin = document.getElementById('switchToLogin');
+    const switchToRegister = document.getElementById('switchToRegister');
+
+    function showRegister() {
+        registerDiv.classList.remove('hidden');
+        loginDiv.classList.add('hidden');
+        tabRegister.classList.add('active');
+        tabLogin.classList.remove('active');
+    }
+
+    function showLogin() {
+        loginDiv.classList.remove('hidden');
+        registerDiv.classList.add('hidden');
+        tabLogin.classList.add('active');
+        tabRegister.classList.remove('active');
+    }
+
+    tabRegister.addEventListener('click', showRegister);
+    tabLogin.addEventListener('click', showLogin);
+    switchToLogin.addEventListener('click', e => { e.preventDefault(); showLogin(); });
+    switchToRegister.addEventListener('click', e => { e.preventDefault(); showRegister(); });
+
+    // === Регистрация ===
+    const registerForm = document.getElementById('registerFormElement');
+    registerForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(registerForm);
+        try {
+            const response = await fetch('register.php', { method: 'POST', body: formData });
+            const data = await response.json();
+            if (data.status === 'error') { showRegister(); alert(data.message); return; }
+            alert(data.message);
+            window.location.href = data.redirect;
+        } catch(err) { showRegister(); alert('Ошибка регистрации'); console.error(err); }
+    });
+
+    // === Вход ===
+    const loginForm = document.getElementById('loginFormElement');
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(loginForm);
+        try {
+            const response = await fetch('login.php', { method: 'POST', body: formData });
+            const data = await response.json();
+            if (data.status === 'error') { showLogin(); alert(data.message); return; }
+            alert(data.message);
+            window.location.href = data.redirect;
+        } catch(err) { showLogin(); alert('Ошибка входа'); console.error(err); }
+    });
+
+    showRegister();
+})();
+</script>
+</body>
+</html>
